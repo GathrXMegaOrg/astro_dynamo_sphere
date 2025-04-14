@@ -23,31 +23,31 @@ jobs:
           python -m pip install --upgrade pip
           pip install boto3  # AWS SDK for Python
 
-      - name: Run the Python script to generate the status
-        run: |
-          python status_update.py
+      # - name: Run the Python script to generate the status
+      #   run: |
+      #     python status_update.py
 
-      - name: Debug - Check if the bucket name is set correctly
-        run: |
-          echo "S3 Bucket Name: $AWS_S3_BUCKET_NAME"
-        env:
-          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+      # - name: Debug - Check if the bucket name is set correctly
+      #   run: |
+      #     echo "S3 Bucket Name: $AWS_S3_BUCKET_NAME"
+      #   env:
+      #     AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
 
-      - name: Upload status to AWS S3
-        run: |
-          echo "Uploading to S3 bucket: $AWS_S3_BUCKET_NAME"
-          aws s3 cp deployment_status.txt s3://$AWS_S3_BUCKET_NAME/deployment_status.txt
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+      # - name: Upload status to AWS S3
+      #   run: |
+      #     echo "Uploading to S3 bucket: $AWS_S3_BUCKET_NAME"
+      #     aws s3 cp deployment_status.txt s3://$AWS_S3_BUCKET_NAME/deployment_status.txt
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_REGION: ${{ secrets.AWS_REGION }}
+      #     AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
 
       - name: Create deployment in GitHub API
         id: create_deployment
         run: |
           response=$(curl -X POST \
-            -H "Authorization: token ${{ secrets.GToken }}" \
+            -H "Authorization: token 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" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{
                   "ref": "refs/heads/main",
@@ -64,7 +64,7 @@ jobs:
       - name: Set Deployment Status to Pending
         run: |
           curl -X POST \
-            -H "Authorization: token ${{ secrets.GToken }}" \
+            -H "Authorization: token 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" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{
                   "state": "pending",
@@ -76,7 +76,7 @@ jobs:
       - name: Update Deployment Status to Success
         run: |
           curl -X POST \
-            -H "Authorization: token ${{ secrets.GToken }}" \
+            -H "Authorization: token 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" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{
                   "state": "success",
